@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.5.16/dist/vue.js"></script>
+  <script src="https://unpkg.com/@vue/composition-api/dist/vue-composition-api.umd.js"></script>
+
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.bundle.min.js"
+    integrity="sha384-6khuMg9gaYr5AxOqhkVIODVIvm9ynTT5J4V1cfthmT+emCG6yVmEZsRHdxlotUnm"
+    crossorigin="anonymous"></script>
+</head>
+
+<style>
+</style>
+
+<body>
+  <div id="warning" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">ERROR!</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Please fill out all of the details before solving!</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div id="answer" class="modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Solution</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>test</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <p>At the dinner party were Lady Winslow, Doctor Marcolla, Countess Contee, Madam Natsiou, and Baroness Finch.</p>
+    <p>
+      The women sat in a row. They all wore different colors and <select id="char-1" class="characters"></select>
+      wore a jaunty <select id="col-1" class="colors"></select> hat. <select id="char-2" class="characters"></select>
+      was at the
+      far left, next to the guest wearing a
+      <select id="col-2" class="colors"></select> jacket. The lady in <select id="col-3" class="colors"></select>
+      sat left of someone in <select id="col-4" class="colors"></select>. I remember that <select id="col-3"
+        class="colors"></select> outfit because the woman spilled her <select id="a-1" class="alcohol"></select> all
+      over
+      it. The
+      traveler from <select id="pl-1" class="places"></select> was dressed entirely in <select id="col-5"
+        class="colors"></select>. When one of the dinner guests
+      bragged about her <select id="i-1" class="items"></select>, the
+      woman next to her said they were finer in <select id="pl-1" class="places"></select>, where she lived.
+    </p>
+    <p>
+      So <select id="char-3" class="characters"></select>
+      showed off a prized <select id="i-2" class="items"></select>, at which the lady from <select id="pl-2"
+        class="places"></select> scoffed, saying it was no match for her <select id="i-3" class="items"></select>.
+      Someone else carried a valuable <select id="i-4" class="items"></select> and when she saw it, the visitor from
+      <select id="pl-3" class="places"></select> next to her almost spilled her
+      neighbor's <select id="a-2" class="alcohol"></select>. <select id="char-4" class="characters"></select> raised her
+      <select id="a-3" class="alcohol"></select> in toast. The lady from <select id="pl-4" class="places"></select>,
+      full of <select id="a-4" class="alcohol"></select>, jumped up onto the
+      table,
+      falling onto the guest in the center seat, spilling the poor woman's <select id="a-5" class="alcohol"></select>.
+      Then
+      <select id="char-5" class="characters"></select> captivated them all with
+      a
+      story about her wild youth in <select id="pl-5" class="places"></select>.
+    </p>
+    <p>In the morning, there were four heirlooms under the table: the Diamond, Bird Pendant, the War Medal, and the
+      Snuff
+      Tin.</p>
+    <p>But who owned each?</p>
+  </div>
+
+  <div>
+    <button id="btn-solve" type="button" class="btn btn-primary">Solve!</button>
+  </div>
+
+</body>
+
+
+<script>
+  var characters = ['Lady Winslow', 'Doctor Marcolla', 'Countess Contee', 'Madam Natsiou', 'Baroness Finch'];
+  var colors = ['red', 'purple', 'green', 'blue', 'white'];
+  var places = ['Dabokva', 'Baleton', 'Fraeport', 'Dunwall', 'Karnaca'];
+  var alcohol = ['absinthe', 'rum', 'beer', 'wine', 'whiskey'];
+  var items = ['Snuff Tin', 'Diamond', 'Ring', 'Bird Pendant', 'War Medal'];
+  var position = [0, 1, 2, 3, 4]; // Left to right
+
+  var tables = [characters, colors, places, alcohol, items, position];
+
+  // Create dropdowns
+  $('select').each(function () {
+    if ($(this).hasClass('characters')) {
+      appendOptions($(this), characters);
+    }
+    else if ($(this).hasClass('colors')) {
+      appendOptions($(this), colors);
+    }
+    else if ($(this).hasClass('places')) {
+      appendOptions($(this), places);
+    }
+    else if ($(this).hasClass('alcohol')) {
+      appendOptions($(this), alcohol);
+    }
+    else if ($(this).hasClass('items')) {
+      appendOptions($(this), items);
+    }
+
+  });
+
+  function appendOptions(el, arr) {
+    el.append('<option selected="true" disabled="disabled" value="' + 'disabled' + '">' + 'Choose...' + '</option>');
+    arr.forEach(function (txt) {
+      el.append('<option value="' + txt + '">' + txt + '</option>');
+    });
+  };
+
+  // Simple Solution Hacky
+  function simpleSolve() {
+    var answer_map ={
+      'Snuff Tin': '',
+      'Diamond': '',
+      'Ring': '',
+      'Bird Pendant': '',
+      'War Medal': ''
+    }
+
+    answer_map[$('#i-3').find(':selected').val()] = $('#char-1').find(':selected').val();
+    answer_map[$('#i-4').find(':selected').val()] = $('#char-2').find(':selected').val();
+    answer_map[$('#i-1').find(':selected').val()] = $('#char-4').find(':selected').val();
+    answer_map[$('#i-2').find(':selected').val()] = $('#char-3').find(':selected').val();
+
+    for (var key in answer_map) {
+      if (answer_map[key] == '') {
+        answer_map[key] = $('#char-5').find(':selected').val();
+      }
+    };
+
+  }
+
+  // True Solution, will complete in the future
+
+
+  // Create chart
+  var logic = Array.from(Array(), () => 0)
+
+
+  // Go through possibilities, eliminate if fail an assertion
+
+
+
+
+
+  // Solve button
+  $('#btn-solve').click(function () {
+    var incomplete = false;
+    // Check for completeness
+    $('select').each(function () {
+      if ($(this).find(':selected').val() == 'disabled') {
+        $('#warning').modal('show');
+        incomplete = true;
+        return false; // functions as a break in jQuery
+      };
+    });
+
+    // Solve
+    if (!incomplete){
+      simpleSolve();
+      $('#answer').modal('show');
+    }
+  })
+</script>
